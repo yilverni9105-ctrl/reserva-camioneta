@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda · Camioneta Empresarial</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #253358;
+    --blue-accent: #3b6fd4;
+    --blue-light: #dbe8ff;
+    --truck-orange: #e86b2c;
+    --truck-orange-light: #fdeee4;
+    --gray-bg: #f5f6fa;
+    --gray-border: #e0e3ed;
+    --gray-text: #6b7285;
+    --white: #ffffff;
+    --green: #22a06b;
+    --green-light: #e3f5ee;
+    --red: #d93636;
+    --red-light: #fde8e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--gray-bg);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 68px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+
+  .truck-icon {
+    font-size: 28px;
+    background: var(--truck-orange);
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+  }
+
+  header span {
+    font-size: .8rem;
+    color: #8ea3cc;
+    font-weight: 400;
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .82rem;
+    color: #8ea3cc;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; }
+    50% { opacity:.4; }
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 780px) {
+    .container { grid-template-columns: 1fr; }
+  }
+
+  /* CARD */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(26,39,68,.07);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--gray-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .badge {
+    background: var(--blue-light);
+    color: var(--blue-accent);
+    font-size: .72rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-left: auto;
+  }
+
+  /* FORM */
+  .form-body { padding: 22px 24px; }
+
+  .field { margin-bottom: 18px; }
+
+  label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 7px;
+  }
+
+  input[type="text"], input[type="date"], textarea, select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: .9rem;
+    color: var(--navy);
+    background: var(--gray-bg);
+    transition: border .15s, box-shadow .15s;
+    outline: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 0 3px rgba(59,111,212,.12);
+    background: white;
+  }
+
+  .date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 72px;
+    font-size: .88rem;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: var(--truck-orange);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: background .15s, transform .1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover { background: #cf5e22; }
+  .btn-primary:active { transform: scale(.98); }
+
+  /* ALERT */
+  .alert {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: .84rem;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .alert.show { display: flex; align-items: center; gap: 8px; }
+  .alert.success { background: var(--green-light); color: #166c49; border: 1px solid #a8dfc8; }
+  .alert.error { background: var(--red-light); color: var(--red); border: 1px solid #f5b4b4; }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .stat {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 10px rgba(26,39,68,.06);
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .stat-num.orange { color: var(--truck-orange); }
+  .stat-num.green { color: var(--green); }
+  .stat-num.blue { color: var(--blue-accent); }
+
+  .stat-label {
+    font-size: .72rem;
+    color: var(--gray-text);
+    font-weight: 500;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .controls-row {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 8px 12px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 8px;
+    font-size: .85rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--navy);
+    background: var(--gray-bg);
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: var(--blue-accent);
+    background: white;
+  }
+
+  .filter-select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 8px;
+    font-size: .85rem;
+    background: var(--gray-bg);
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+
+  .btn-export {
+    padding: 8px 14px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .15s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-export:hover { background: var(--navy-mid); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+  }
+
+  thead th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    background: var(--gray-bg);
+    border-bottom: 1px solid var(--gray-border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  thead th:hover { color: var(--navy); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--gray-border);
+    transition: background .12s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f7f9ff; }
+
+  td {
+    padding: 13px 16px;
+    vertical-align: middle;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--blue-accent);
+    color: white;
+    font-weight: 700;
+    font-size: .78rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  .name-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 600;
+  }
+
+  .chip.active { background: var(--green-light); color: #166c49; }
+  .chip.pending { background: var(--truck-orange-light); color: #b34f18; }
+  .chip.done { background: var(--gray-border); color: var(--gray-text); }
+  .chip.cancelled { background: var(--red-light); color: var(--red); }
+
+  .date-badge {
+    font-size: .82rem;
+    color: var(--navy-mid);
+    font-weight: 500;
+  }
+
+  .days-count {
+    font-weight: 700;
+    color: var(--blue-accent);
+    font-size: .85rem;
+  }
+
+  .action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: .82rem;
+    font-weight: 600;
+    transition: background .12s;
+  }
+
+  .action-btn.cancel { color: var(--red); }
+  .action-btn.cancel:hover { background: var(--red-light); }
+  .action-btn.done-btn { color: var(--green); }
+  .action-btn.done-btn:hover { background: var(--green-light); }
+
+  .empty-state {
+    text-align: center;
+    padding: 52px 24px;
+    color: var(--gray-text);
+  }
+
+  .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty-state p { font-size: .9rem; }
+
+  /* MINI CALENDAR */
+  .mini-cal { padding: 20px 24px; }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .cal-nav button {
+    background: none;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 7px;
+    width: 30px; height: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--navy);
+    transition: background .12s;
+  }
+
+  .cal-nav button:hover { background: var(--gray-bg); }
+
+  .cal-month {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    color: var(--navy);
+    text-transform: capitalize;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    text-align: center;
+  }
+
+  .cal-day-name {
+    font-size: .68rem;
+    font-weight: 700;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    padding: 4px 0 6px;
+    letter-spacing: .05em;
+  }
+
+  .cal-day {
+    padding: 6px 4px;
+    font-size: .8rem;
+    border-radius: 7px;
+    cursor: default;
+    font-weight: 500;
+    color: var(--navy);
+    position: relative;
+  }
+
+  .cal-day.other-month { color: #c5c9d4; }
+  .cal-day.today { background: var(--navy); color: white; font-weight: 700; }
+  .cal-day.reserved { background: var(--truck-orange-light); color: var(--truck-orange); font-weight: 700; }
+  .cal-day.reserved.today { background: var(--truck-orange); color: white; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .75rem;
+    color: var(--gray-text);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+  }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--navy);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: .87rem;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all .3s cubic-bezier(.34,1.56,.64,1);
+    z-index: 999;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="truck-icon">🚐</div>
+  <div>
+    <h1>Agenda Camioneta Empresarial</h1>
+    <span>Sistema de reservas por días</span>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    Disponible ahora
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- COLUMNA IZQUIERDA -->
+  <div>
+
+    <!-- FORMULARIO -->
+    <div class="card" style="margin-bottom:22px;">
+      <div class="card-header">
+        <span style="font-size:1.1rem">📋</span>
+        <h2>Nueva reserva</h2>
+      </div>
+      <div class="form-body">
+        <div id="formAlert" class="alert"></div>
+
+        <div class="field">
+          <label>Nombre del solicitante</label>
+          <input type="text" id="nombre" placeholder="Ej. Carlos Rodríguez" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label>Fechas de reserva</label>
+          <div class="date-row">
+            <div>
+              <input type="date" id="fechaInicio">
+            </div>
+            <div>
+              <input type="date" id="fechaFin">
+            </div>
+          </div>
+          <div style="font-size:.75rem;color:var(--gray-text);margin-top:5px;">Inicio → Fin (mismo día si es jornada única)</div>
+        </div>
+
+        <div class="field">
+          <label>Motivo / Destino <span style="font-weight:400;text-transform:none">(opcional)</span></label>
+          <textarea id="motivo" placeholder="Ej. Entrega de materiales en sede Norte"></textarea>
+        </div>
+
+        <button class="btn-primary" onclick="registrarReserva()">
+          <span>🚐</span> Reservar camioneta
+        </button>
+      </div>
+    </div>
+
+    <!-- MINI CALENDARIO -->
+    <div class="card">
+      <div class="card-header">
+        <span style="font-size:1.1rem">📅</span>
+        <h2>Vista mensual</h2>
+      </div>
+      <div class="mini-cal">
+        <div class="cal-nav">
+          <button onclick="prevMonth()">‹</button>
+          <div class="cal-month" id="calMonth"></div>
+          <button onclick="nextMonth()">›</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--navy)"></div> Hoy
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--truck-orange)"></div> Reservado
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COLUMNA DERECHA -->
+  <div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num orange" id="statTotal">0</div>
+        <div class="stat-label">Total reservas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num green" id="statActivas">0</div>
+        <div class="stat-label">Activas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num blue" id="statDias">0</div>
+        <div class="stat-label">Días reservados</div>
+      </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="card">
+      <div class="card-header">
+        <span style="font-size:1.1rem">📊</span>
+        <h2>Registro de reservas</h2>
+        <div class="badge" id="contadorBadge">0 registros</div>
+      </div>
+
+      <div class="controls-row">
+        <input class="search-input" type="text" id="buscar" placeholder="🔍 Buscar por nombre o motivo…" oninput="renderTabla()">
+        <select class="filter-select" id="filtroEstado" onchange="renderTabla()">
+          <option value="">Todos los estados</option>
+          <option value="activa">Activa</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="completada">Completada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+        <button class="btn-export" onclick="exportarCSV()">⬇ Exportar CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('nombre')">SOLICITANTE ↕</th>
+              <th onclick="sortBy('fechaInicio')">INICIO ↕</th>
+              <th onclick="sortBy('fechaFin')">FIN ↕</th>
+              <th>DÍAS</th>
+              <th>DESTINO</th>
+              <th>ESTADO</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none">
+          <div class="icon">🚐</div>
+          <p>No hay reservas aún.<br>¡Registra la primera usando el formulario!</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ─── ESTADO ───────────────────────────────────────────────────────────────────
+let reservas = JSON.parse(localStorage.getItem('camioneta_reservas') || '[]');
+let calYear, calMonth;
+let sortCol = 'fechaInicio';
+let sortAsc = true;
+
+const hoy = new Date();
+calYear = hoy.getFullYear();
+calMonth = hoy.getMonth();
+
+// ─── UTILIDADES ───────────────────────────────────────────────────────────────
+function guardar() {
+  localStorage.setItem('camioneta_reservas', JSON.stringify(reservas));
+}
+
+function initiales(nombre) {
+  return nombre.trim().split(' ').slice(0,2).map(p=>p[0]?.toUpperCase()||'').join('');
+}
+
+function colorAvatar(nombre) {
+  const colores = ['#3b6fd4','#e86b2c','#22a06b','#8b5cf6','#d93636','#0891b2','#ca8a04'];
+  let h = 0;
+  for (let c of nombre) h = (h * 31 + c.charCodeAt(0)) % colores.length;
+  return colores[h];
+}
+
+function diasEntre(ini, fin) {
+  const a = new Date(ini + 'T00:00:00');
+  const b = new Date(fin + 'T00:00:00');
+  return Math.max(1, Math.round((b - a) / 86400000) + 1);
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  const [y,m,dd] = d.split('-');
+  return `${dd}/${m}/${y}`;
+}
+
+function estadoChip(e) {
+  const map = {
+    activa: ['🟢','active','Activa'],
+    pendiente: ['🟠','pending','Pendiente'],
+    completada: ['⚫','done','Completada'],
+    cancelada: ['🔴','cancelled','Cancelada'],
+  };
+  const [ico, cls, lbl] = map[e] || ['','',''];
+  return `<span class="chip ${cls}">${ico} ${lbl}</span>`;
+}
+
+function computarEstado(ini, fin) {
+  const hoyStr = hoy.toISOString().split('T')[0];
+  if (ini > hoyStr) return 'pendiente';
+  if (fin >= hoyStr) return 'activa';
+  return 'completada';
+}
+
+function fechasConflicto(ini1, fin1, ini2, fin2) {
+  return ini1 <= fin2 && ini2 <= fin1;
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── REGISTRAR RESERVA ────────────────────────────────────────────────────────
+function registrarReserva() {
+  const nombre = document.getElementById('nombre').value.trim();
+  const ini = document.getElementById('fechaInicio').value;
+  const fin = document.getElementById('fechaFin').value;
+  const motivo = document.getElementById('motivo').value.trim();
+
+  const alert = document.getElementById('formAlert');
+
+  function showAlert(msg, tipo) {
+    alert.className = `alert show ${tipo}`;
+    alert.innerHTML = (tipo==='error'?'❌ ':'✅ ') + msg;
+    setTimeout(() => alert.classList.remove('show'), 4000);
+  }
+
+  if (!nombre) { showAlert('Ingresa el nombre del solicitante.', 'error'); return; }
+  if (!ini || !fin) { showAlert('Selecciona las fechas de inicio y fin.', 'error'); return; }
+  if (ini > fin) { showAlert('La fecha de inicio no puede ser mayor al fin.', 'error'); return; }
+
+  // Verificar conflictos
+  const conflicto = reservas.find(r =>
+    r.estado !== 'cancelada' &&
+    fechasConflicto(ini, fin, r.fechaInicio, r.fechaFin)
+  );
+
+  if (conflicto) {
+    showAlert(`Ya hay una reserva de ${conflicto.nombre} del ${formatDate(conflicto.fechaInicio)} al ${formatDate(conflicto.fechaFin)} en esas fechas.`, 'error');
+    return;
+  }
+
+  const nueva = {
+    id: Date.now(),
+    nombre,
+    fechaInicio: ini,
+    fechaFin: fin,
+    motivo: motivo || 'Sin especificar',
+    estado: computarEstado(ini, fin),
+    creado: new Date().toISOString()
+  };
+
+  reservas.unshift(nueva);
+  guardar();
+  renderAll();
+
+  // Limpiar form
+  document.getElementById('nombre').value = '';
+  document.getElementById('fechaInicio').value = '';
+  document.getElementById('fechaFin').value = '';
+  document.getElementById('motivo').value = '';
+
+  showToast(`✅ Reserva de <strong>${nombre}</strong> registrada correctamente`);
+  showAlert(`Reserva registrada del ${formatDate(ini)} al ${formatDate(fin)}.`, 'success');
+}
+
+// ─── CAMBIAR ESTADO ───────────────────────────────────────────────────────────
+function cancelar(id) {
+  if (!confirm('¿Cancelar esta reserva?')) return;
+  const r = reservas.find(r => r.id === id);
+  if (r) { r.estado = 'cancelada'; guardar(); renderAll(); showToast('🚫 Reserva cancelada'); }
+}
+
+function marcarCompletada(id) {
+  const r = reservas.find(r => r.id === id);
+  if (r) { r.estado = 'completada'; guardar(); renderAll(); showToast('✅ Marcada como completada'); }
+}
+
+function eliminar(id) {
+  if (!confirm('¿Eliminar permanentemente este registro?')) return;
+  reservas = reservas.filter(r => r.id !== id);
+  guardar(); renderAll(); showToast('🗑 Registro eliminado');
+}
+
+// ─── SORT ─────────────────────────────────────────────────────────────────────
+function sortBy(col) {
+  if (sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = true; }
+  renderTabla();
+}
+
+// ─── RENDER TABLA ─────────────────────────────────────────────────────────────
+function renderTabla() {
+  const q = document.getElementById('buscar').value.toLowerCase();
+  const filtroE = document.getElementById('filtroEstado').value;
+
+  // Re-computar estados automáticos
+  reservas.forEach(r => {
+    if (r.estado !== 'cancelada' && r.estado !== 'completada') {
+      r.estado = computarEstado(r.fechaInicio, r.fechaFin);
+    }
+  });
+
+  let lista = reservas.filter(r => {
+    const matchQ = r.nombre.toLowerCase().includes(q) || r.motivo.toLowerCase().includes(q);
+    const matchE = !filtroE || r.estado === filtroE;
+    return matchQ && matchE;
+  });
+
+  // Sort
+  lista.sort((a, b) => {
+    let va = a[sortCol] || '', vb = b[sortCol] || '';
+    if (va < vb) return sortAsc ? -1 : 1;
+    if (va > vb) return sortAsc ? 1 : -1;
+    return 0;
+  });
+
+  const tbody = document.getElementById('tablaBody');
+  const empty = document.getElementById('emptyState');
+
+  if (lista.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = lista.map(r => {
+      const dias = diasEntre(r.fechaInicio, r.fechaFin);
+      const col = colorAvatar(r.nombre);
+      return `
+        <tr>
+          <td>
+            <div class="name-cell">
+              <div class="avatar" style="background:${col}">${initiales(r.nombre)}</div>
+              <span style="font-weight:600">${r.nombre}</span>
+            </div>
+          </td>
+          <td><span class="date-badge">📅 ${formatDate(r.fechaInicio)}</span></td>
+          <td><span class="date-badge">📅 ${formatDate(r.fechaFin)}</span></td>
+          <td><span class="days-count">${dias}d</span></td>
+          <td style="color:var(--gray-text);font-size:.83rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.motivo}">${r.motivo}</td>
+          <td>${estadoChip(r.estado)}</td>
+          <td style="white-space:nowrap">
+            ${r.estado !== 'cancelada' && r.estado !== 'completada' ? `
+              <button class="action-btn done-btn" onclick="marcarCompletada(${r.id})" title="Marcar completada">✔</button>
+              <button class="action-btn cancel" onclick="cancelar(${r.id})" title="Cancelar">✖</button>
+            ` : ''}
+            <button class="action-btn" onclick="eliminar(${r.id})" title="Eliminar" style="color:#aaa">🗑</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Stats
+  const total = reservas.length;
+  const activas = reservas.filter(r => r.estado === 'activa' || r.estado === 'pendiente').length;
+  const totalDias = reservas.filter(r => r.estado !== 'cancelada')
+    .reduce((s, r) => s + diasEntre(r.fechaInicio, r.fechaFin), 0);
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statActivas').textContent = activas;
+  document.getElementById('statDias').textContent = totalDias;
+  document.getElementById('contadorBadge').textContent = `${lista.length} registros`;
+}
+
+// ─── MINI CALENDARIO ──────────────────────────────────────────────────────────
+function getDiasReservados() {
+  const dias = new Set();
+  reservas.filter(r => r.estado !== 'cancelada').forEach(r => {
+    let d = new Date(r.fechaInicio + 'T00:00:00');
+    const fin = new Date(r.fechaFin + 'T00:00:00');
+    while (d <= fin) {
+      dias.add(d.toISOString().split('T')[0]);
+      d.setDate(d.getDate() + 1);
+    }
+  });
+  return dias;
+}
+
+function renderCalendario() {
+  const diasRes = getDiasReservados();
+  const nombres = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('calMonth').textContent = `${nombres[calMonth]} ${calYear}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  ['Do','Lu','Ma','Mi','Ju','Vi','Sa'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-name';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const primero = new Date(calYear, calMonth, 1);
+  const inicio = new Date(primero);
+  inicio.setDate(1 - primero.getDay());
+
+  const hoyStr = hoy.toISOString().split('T')[0];
+
+  for (let i = 0; i < 42; i++) {
+    const fecha = new Date(inicio);
+    fecha.setDate(inicio.getDate() + i);
+    const fStr = fecha.toISOString().split('T')[0];
+    const mismoMes = fecha.getMonth() === calMonth;
+
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    if (!mismoMes) el.classList.add('other-month');
+    if (fStr === hoyStr) el.classList.add('today');
+    if (diasRes.has(fStr) && mismoMes) el.classList.add('reserved');
+    el.textContent = fecha.getDate();
+
+    if (diasRes.has(fStr) && mismoMes) {
+      el.title = 'Día reservado';
+    }
+
+    grid.appendChild(el);
+  }
+}
+
+function prevMonth() {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendario();
+}
+
+function nextMonth() {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendario();
+}
+
+// ─── EXPORTAR CSV ─────────────────────────────────────────────────────────────
+function exportarCSV() {
+  if (reservas.length === 0) { showToast('⚠ No hay datos para exportar'); return; }
+
+  const cols = ['ID','Nombre','Fecha Inicio','Fecha Fin','Días','Destino/Motivo','Estado','Fecha Registro'];
+  const rows = reservas.map(r => [
+    r.id,
+    `"${r.nombre}"`,
+    formatDate(r.fechaInicio),
+    formatDate(r.fechaFin),
+    diasEntre(r.fechaInicio, r.fechaFin),
+    `"${r.motivo}"`,
+    r.estado,
+    new Date(r.creado).toLocaleDateString('es-CO')
+  ]);
+
+  const csv = [cols.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reservas_camioneta_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 CSV exportado correctamente');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderTabla();
+  renderCalendario();
+}
+
+// Set fechas mínimas a hoy
+const todayStr = hoy.toISOString().split('T')[0];
+document.getElementById('fechaInicio').min = todayStr;
+document.getElementById('fechaFin').min = todayStr;
+
+document.getElementById('fechaInicio').addEventListener('change', function() {
+  document.getElementById('fechaFin').min = this.value;
+  if (document.getElementById('fechaFin').value < this.value) {
+    document.getElementById('fechaFin').value = this.value;
+  }
+});
+
+renderAll();
+</script>
+</body>
+</html>
